@@ -60,28 +60,15 @@ services:
       - "11433:1433"
 
 #php artisan serve --host 0.0.0.0
-
-  npm:
-    container_name: npm
-    image: node:current-alpine
-    volumes:
-      - ./develop:/var/www/html
-    ports:
-      - "3000:3000"
-    working_dir: /var/www/html
-    entrypoint: [ 'npm' ]
-    networks:
-      - laravel
-
-  artisan:
-    container_name: artisan
-    build:
-      context: .
-      dockerfile: ./docker/php/Dockerfile
-    volumes:
-      - ./develop:/var/www/html
-    depends_on:
-      - php
-    entrypoint: [ 'php', '/var/www/html/artisan' ]
-    networks:
-      - laravel
+#  artisan:
+#    container_name: artisan
+#    build:
+#      context: .
+#      dockerfile: ./docker/php/Dockerfile
+#    volumes:
+#      - ./develop:/var/www/html
+#    depends_on:
+#      - php
+#    entrypoint: [ 'php', '/var/www/html/artisan' ]
+#    networks:
+#      - laravel

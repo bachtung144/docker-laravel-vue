@@ -25,12 +25,19 @@ ENV TZ=Asia/Tokyo
 # Node.js , npm のインストール
 #RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 #RUN apt-get install -y nodejs npm
+RUN apt-get install -y gnupg2
+# Removing /var/lib/apt/lists worked
+RUN rm -rf /var/lib/apt/lists/ && curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs npm
 
 # composer 2.4.4 インストール
 COPY --from=composer:2.4.4 /usr/bin/composer /usr/bin/composer
 
 #vuejs
-RUN composer require laravel/ui
-#RUN php artisan ui vue
+RUN npm install \
+    && npm install vue@next vue-loader@next \
+    && npm i @vitejs/plugin-vue
+
+RUN npm run dev
 
 WORKDIR "/var/www/html"
