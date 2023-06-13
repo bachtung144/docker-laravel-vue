@@ -1,0 +1,63 @@
+version: '3'
+
+networks:
+  laravel:
+
+volumes:
+  maildir: {}
+
+services:
+  php:
+    container_name: php
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    volumes:
+      - ./develop/:/var/www/html
+    networks:
+      - laravel
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - '8883:80'
+    depends_on:
+      - php
+    volumes:
+      - ./develop/:/var/www/html
+
+  mail:
+    image: mailhog/mailhog:latest
+    container_name: mail
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /tmp
+    volumes:
+      - maildir:/tmp
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=saPassword1234
+      - MSSQL_PID=Express
+      - MSSQL_LCID=1041
+      - MSSQL_COLLATION=Japanese_CI_AS
+    volumes:
+      - "./mssqlserver/data:/var/opt/mssql/data"
+      - "./mssqlserver/log:/var/opt/mssql/log"
+      - "./mssqlserver/secrets:/var/opt/mssql/secrets"
+    ports:
+      - "11433:1433"
+
+#php artisan serve --host 0.0.0.0
