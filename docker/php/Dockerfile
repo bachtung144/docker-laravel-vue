@@ -29,7 +29,8 @@ ENV TZ=Asia/Tokyo
 # composer 2.4.4 インストール
 COPY --from=composer:2.4.4 /usr/bin/composer /usr/bin/composer
 
-WORKDIR "/var/www/html"
+#vuejs
+RUN composer require laravel/ui
+#RUN php artisan ui vue
 
-EXPOSE 8000
-EXPOSE 8080
+WORKDIR "/var/www/html"
